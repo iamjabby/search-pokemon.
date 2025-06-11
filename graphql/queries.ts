@@ -56,3 +56,11 @@ export const GET_POKEMON_DETAILS = gql`
         }
 }
 `;
+
+export const GET_ALL_POKEMON_NAMES = gql`
+  query GetAllPokemonNames($first: Int!) {
+    pokemons(first: $first) {
+      name
+    }
+  }
+`;
