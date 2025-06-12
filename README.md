@@ -2,8 +2,9 @@
 
 Welcome to the Pokémon Search Application! This project is a Next.js application that allows users to search for Pokémon and view their detailed information, including types, attacks, evolutions, and more.
 
-![Pokémon Search Demo](https://i.pinimg.com/originals/b8/a4/97/b8a497c6f5fea075057190ef36534dd9.gif)
-_A quick demonstration of searching for Pokémon and viewing details._
+[![Visit My Website](https://img.shields.io/badge/Visit%20My-Website-blue?style=for-the-badge&logo=arrow-right&logoColor=white)](https://search-pokemon-livid.vercel.app)
+
+  ![Pokémon Search Demo](https://i.pinimg.com/originals/b8/a4/97/b8a497c6f5fea075057190ef36534dd9.gif)
 
 ## ✨ Features
 
