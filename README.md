@@ -2,7 +2,7 @@
 
 Welcome to the Pokémon Search Application! This project is a Next.js application that allows users to search for Pokémon and view their detailed information, including types, attacks, evolutions, and more.
 
-![Pokémon Search Demo]([https://your-image-hosting-service.com/your-pokemon-demo.gif](https://i.pinimg.com/originals/b8/a4/97/b8a497c6f5fea075057190ef36534dd9.gif))
+![Pokémon Search Demo](https://i.pinimg.com/originals/b8/a4/97/b8a497c6f5fea075057190ef36534dd9.gif)
 _A quick demonstration of searching for Pokémon and viewing details._
 
 ## ✨ Features
@@ -41,6 +41,7 @@ Make sure you have Node.js (version 18.x or higher is recommended) and npm/yarn/
 
 To start the development server, run:
 
+```bash
 npm run dev
 # or
 yarn dev
