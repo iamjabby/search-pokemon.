@@ -69,8 +69,7 @@ export async function generateStaticParams() {
 
 
 export default async function PokemonDetailPage({ params }: PokemonPageProps) {
-    const resolvedParams = await params;
-    const { pokemonName } = resolvedParams;
+    const { pokemonName } = params;
 
     const { data } = await serverClient.query<{ pokemon: PokemonDetail | null }>({
         query: GET_POKEMON_DETAILS,
