@@ -8,29 +8,29 @@ Welcome to the Pokémon Search Application! This project is a Next.js applicatio
 
 ## ✨ Features
 
-**Pokémon Search**: Quickly find Pokémon by name.
-**Detailed Pokémon Profiles**: View comprehensive information for each Pokémon, including:
-    - Basic stats (ID, number, name, image)
-    - Types, Classification, Height, Weight
-    - Max HP and CP
-    - Flee Rate
-    - Fast and Special Attacks with damage details
-    - Weaknesses and Resistances
-    - Evolution chain and requirements
-**Responsive Design**: Optimized for a seamless experience across various devices (desktop, tablet, mobile).
-**Server Components & Client Components**: Leverages Next.js 15 App Router features for efficient data fetching and rendering.
-**Suspense for Loading States**: Provides a smooth user experience with loading indicators while client-side content hydrates.
-**GraphQL Integration**: Fetches Pokémon data using Apollo Client from a GraphQL API.
-**Static Site Generation (SSG)**: Pre-renders individual Pokémon detail pages for fast loading and SEO benefits.
+* Pokémon Search: Quickly find Pokémon by name.
+* Detailed Pokémon Profiles : View comprehensive information for each Pokémon, including:
+    * Basic stats (ID, number, name, image)
+    * Types, Classification, Height, Weight
+    * Max HP and CP
+    * Flee Rate
+    * Fast and Special Attacks with damage details
+    * Weaknesses and Resistances
+    * Evolution chain and requirements
+* Responsive Design: Optimized for a seamless experience across various devices (desktop, tablet, mobile).
+* Server Components & Client Components: Leverages Next.js 15 App Router features for efficient data fetching and rendering.
+* Suspense for Loading States: Provides a smooth user experience with loading indicators while client-side content hydrates.
+* GraphQL Integration: Fetches Pokémon data using Apollo Client from a GraphQL API.
+* Static Site Generation (SSG): Pre-renders individual Pokémon detail pages for fast loading and SEO benefits.
 
 ## 🚀 Technologies Used
 
-**Next.js 15.3.3 (App Router)**: The React framework for production.
-**React**: For building user interfaces.
-**TypeScript**: For type-safe JavaScript.
-**Tailwind CSS**: For rapid UI development.
-**Apollo Client**: For GraphQL data fetching.
-**Lucide React**: For icons.
+* Next.js 15.3.3 (App Router): The React framework for production.
+* React: For building user interfaces.
+* TypeScript: For type-safe JavaScript.
+* Tailwind CSS : For rapid UI development.
+* Apollo Client: For GraphQL data fetching.
+* Lucide React: For icons.
 
 ## 📦 Getting Started
 Follow these steps to get the project up and running on your local machine.
