@@ -49,14 +49,7 @@ interface PokemonDetail {
     maxHP?: number;
 }
 
-interface PokemonPageProps {
-    params: {
-        pokemonName: string;
-    };
-}
-
 export async function generateStaticParams() {
-
     const { data } = await serverClient.query({
         query: GET_ALL_POKEMON_NAMES,
         variables: { first: 151 },
@@ -67,11 +60,23 @@ export async function generateStaticParams() {
     }));
 }
 
+interface PokemonPageParams {
+    pokemonName: string;
+}
 
-export default async function PokemonDetailPage({ params }: PokemonPageProps) {
-    const { pokemonName } = params;
+interface PokemonDetailPageProps {
+    params: Promise<PokemonPageParams>;
+}
 
-    const { data } = await serverClient.query<{ pokemon: PokemonDetail | null }>({
+export default async function PokemonDetailPage({
+    params,
+}: PokemonDetailPageProps) {
+    const resolvedParams: PokemonPageParams = await params;
+    const { pokemonName } = resolvedParams;
+
+    const { data } = await serverClient.query<{
+        pokemon: PokemonDetail | null;
+    }>({
         query: GET_POKEMON_DETAILS,
         variables: { name: pokemonName },
     });
@@ -87,9 +92,10 @@ export default async function PokemonDetailPage({ params }: PokemonPageProps) {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100 flex flex-col items-center">
+        <div className="min-h-screen bg-gray-100 flex flex-col"> 
 
-            <div className="w-full bg-red-600 p-2 shadow-lg flex items-center justify-between"> {/* Changed to justify-between */}
+            {/* Header */}
+            <div className="w-full bg-red-600 p-2 shadow-lg flex items-center justify-between">
                 <Link href="/" className="text-white hover:text-blue-200 text-lg font-semibold flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
@@ -103,10 +109,11 @@ export default async function PokemonDetailPage({ params }: PokemonPageProps) {
                     height={75}
                     priority
                 />
-                <div className="w-48"></div>
+                <div className="w-48"></div> 
             </div>
 
-            <div className="bg-white p-8 rounded-2xl shadow-2xl max-w-6xl w-full min-h-[70vh] mx-auto text-gray-800 space-y-8 flex flex-col justify-center mt-6">
+            {/* Description */}
+            <div className="flex-grow bg-white p-8 rounded-2xl shadow-2xl max-w-6xl w-full mx-auto text-gray-800 space-y-8 flex flex-col justify-center mt-6 mb-6">
                 {/* Pokemon Name and Number */}
                 <div className="text-center space-y-1">
                     <span className="text-gray-500 text-lg font-medium tracking-widest block">
@@ -173,7 +180,7 @@ export default async function PokemonDetailPage({ params }: PokemonPageProps) {
                             <div>
                                 <h2 className="text-2xl font-bold text-blue-700 border-b pb-2 mb-4">Attacks</h2>
                                 {/* Fast Attacks */}
-                                {pokemon.attacks.fast?.length > 0 && (
+                                {pokemon.attacks.fast && (
                                     <div className="bg-gray-50 p-4 rounded-xl shadow-sm mb-4">
                                         <h3 className="font-semibold text- mb-1 text-purple-600">⚡ Fast Attacks</h3>
                                         <ul className="space-y-1 list-disc list-inside">
@@ -184,7 +191,7 @@ export default async function PokemonDetailPage({ params }: PokemonPageProps) {
                                     </div>
                                 )}
                                 {/* Special Attacks */}
-                                {pokemon.attacks.special?.length > 0 && (
+                                {pokemon.attacks.special && (
                                     <div className="bg-gray-50 p-4 rounded-xl shadow-sm">
                                         <h3 className="font-semibold text-lg mb-1 text-pink-600">🔥 Special Attacks</h3>
                                         <ul className="space-y-1 list-disc list-inside">
@@ -222,7 +229,7 @@ export default async function PokemonDetailPage({ params }: PokemonPageProps) {
                         <div>
                             <h2 className="text-2xl font-bold text-pink-700 border-b pb-2 mb-3">Evolutions</h2>
 
-                            {pokemon.evolutions?.length > 0 ? (
+                            {pokemon.evolutions && pokemon.evolutions.length > 0 ? (
                                 <div className="flex items-center gap-4 flex-wrap">
                                     <div className="flex flex-col items-center">
                                         <Image
