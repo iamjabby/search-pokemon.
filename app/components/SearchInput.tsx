@@ -30,7 +30,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ initialSearchName, onSearchSu
         type="text"
         value={searchName}
         onChange={handleInputChange}
-        placeholder="Search Pokemon by name (e.g., Pikachu)"
+        placeholder="Search Pokemon by name"
         className="p-2 border border-gray-300 rounded-l-md w-80 text-black" 
       />
       <button

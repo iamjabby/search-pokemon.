@@ -8,8 +8,9 @@ import { GET_POKEMON_DETAILS } from '@/graphql/queries';
 import Link from 'next/link';
 import Image from 'next/image';
 import SearchInput from './components/SearchInput';
+import { getTypeColor } from '@/utils/pokemonColors';
 
-// Type Pokemon 1 
+// Pokemon Type 1
 interface PokemonSummary {
   id: string;
   number: string;
@@ -30,75 +31,141 @@ export default function Home() {
 
   const [submittedSearchName, setSubmittedSearchName] = useState(initialSearchNameFromUrl);
 
-  const [getPokemon, { loading, error, data, called }] = useLazyQuery<PokemonData>(GET_POKEMON_DETAILS, {
-    variables: { name: submittedSearchName },
+  const [pokemonResult, setPokemonResult] = useState<PokemonSummary | null>(null);
+
+  const [getPokemon, { loading, error }] = useLazyQuery<PokemonData>(GET_POKEMON_DETAILS, {
+    fetchPolicy: 'network-only',
   });
 
   useEffect(() => {
-    if (initialSearchNameFromUrl && initialSearchNameFromUrl !== submittedSearchName) {
+    if (initialSearchNameFromUrl !== submittedSearchName) {
       setSubmittedSearchName(initialSearchNameFromUrl);
     }
   }, [initialSearchNameFromUrl, submittedSearchName]);
 
   useEffect(() => {
-    if (submittedSearchName.trim()) {
-      getPokemon({ variables: { name: submittedSearchName.trim() } });
+    const trimmed = submittedSearchName.trim();
+
+    if (!trimmed) {
+      setPokemonResult(null);
+      return;
     }
+
+    getPokemon({ variables: { name: trimmed } }).then((result) => {
+      setPokemonResult(result.data?.pokemon || null);
+    });
   }, [submittedSearchName, getPokemon]);
 
-  const handleSearchSubmit = useCallback((name: string) => {
-    setSubmittedSearchName(name);
+  const handleSearchSubmit = useCallback(
+    (name: string) => {
+      const trimmedName = name.trim();
+      setSubmittedSearchName(trimmedName);
 
-    const params = new URLSearchParams(searchParams.toString());
+      if (!trimmedName) {
+        setPokemonResult(null); 
+      }
 
-    if (name.trim()) {
-      params.set('name', name.trim());
-    } else {
-      params.delete('name')
-    }
+      const params = new URLSearchParams(searchParams.toString());
 
-    router.push(`/?${params.toString()}`);
+      if (trimmedName) {
+        params.set('name', trimmedName);
+      } else {
+        params.delete('name');
+      }
 
-  }, [searchParams, router]);
+      router.push(`/?${params.toString()}`);
+    },
+    [searchParams, router]
+  );
 
-  const pokemon = data?.pokemon;
+  const pokemon = pokemonResult;
 
   return (
-    <main className="min-h-screen p-8 bg-gray-100 flex flex-col items-center">
-      <h1 className="text-4xl font-bold mb-8 text-gray-800">Pokemon Search</h1>
+    <main className="min-h-screen bg-gray-100 flex flex-col items-center">
+      <div className="w-full bg-red-600 p-2 shadow-lg flex justify-center items-center ">
+        <Image
+          src="/logo.png"
+          alt="Pokemon Logo"
+          width={200}
+          height={75}
+          priority
+        />
+      </div>
 
-      <SearchInput
-        initialSearchName={initialSearchNameFromUrl}
-        onSearchSubmit={handleSearchSubmit}
-      />
-
-      {loading && <div className="text-center text-blue-500">Loading Pokemon data...</div>}
-      {error && <div className="text-center text-red-500">Error: {error.message}</div>}
-
-      {called && !loading && !error && !pokemon && submittedSearchName.trim() && ( 
-        <div className="text-center text-yellow-500">
-          Pokemon "{submittedSearchName}" not found.
-        </div>
-      )}
-
-      {pokemon && (
-        <div className="bg-white p-4 rounded-lg shadow-md text-gray-800 text-center max-w-sm w-full">
-          <h2 className="text-2xl font-bold mb-2">{pokemon.name}</h2>
-          <div className="flex justify-center mb-4">
-            <Image src={pokemon.image} alt={pokemon.name} width={150} height={150} className="object-contain" />
+      <div className="p-8 flex flex-col items-center w-full max-w-4xl">
+        {!submittedSearchName.trim() && !loading && (
+          <div className="text-center text-gray-500 p-4">
+            Need to find a Pokémon? Enter its name below!
           </div>
-          <p>Types: {pokemon.types?.join(', ')}</p>
-          <Link href={`/pokemon/${pokemon.name}`} className="mt-4 inline-block bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-            View Details
-          </Link>
-        </div>
-      )}
+        )}
 
-      {!called && !submittedSearchName.trim() && ( 
-        <div className="text-center text-gray-500">
-          Please enter a Pokemon name to search.
-        </div>
-      )}
+        <SearchInput
+          initialSearchName={initialSearchNameFromUrl}
+          onSearchSubmit={handleSearchSubmit}
+        />
+
+        {loading && (
+          <div className="flex flex-col items-center justify-center p-4">
+            <Image
+              src="/pokeball.gif"
+              alt="Loading..."
+              width={50}
+              height={50}
+              unoptimized={true}
+            />
+            <p className="text-blue-500 mt-2">Loading Pokemon data...</p>
+          </div>
+        )}
+
+        {error && <div className="text-center text-red-500">Error: {error.message}</div>}
+
+        {!loading && !error && !pokemon && submittedSearchName.trim() && (
+          <div className="flex flex-col items-center justify-center p-2 text-center">
+            <Image
+              src="/not_found.png"
+              alt="Pokemon not found"
+              width={300}
+              height={100}
+            />
+            <div className="mt-6">
+              <h2 className="text-3xl font-extrabold text-red-600 mb-2">
+                NOT FOUND
+              </h2>
+              <p className="text-xl font-medium text-black">
+                Pokemon &quot;<span className="font-bold text-blue-700">{submittedSearchName}</span>&quot; not found.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {pokemon && submittedSearchName.trim() && (
+          <Link href={`/pokemon/${pokemon.name}`} className="block w-full max-w-sm">
+            <div className="bg-white p-4 rounded-lg shadow-md text-gray-800 text-center w-full transform transition duration-300 hover:scale-105 hover:shadow-xl cursor-pointer">
+              <p className="text-base font-semibold text-gray-400 mb-1">
+                #{pokemon.number}
+              </p>
+              <h2 className="text-2xl font-bold mb-2">{pokemon.name}</h2>
+              <div className="flex justify-center mb-4">
+                <Image src={pokemon.image} alt={pokemon.name} width={150} height={150} className="object-contain" />
+              </div>
+              <div className="mb-2">
+                <p className="font-semibold text-gray-600 mb-1">Types:</p>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {pokemon.types?.map((type) => (
+                    <span
+                      key={type}
+                      className="px-3 py-1 rounded-full text-sm font-medium text-white"
+                      style={{ backgroundColor: getTypeColor(type) }}
+                    >
+                      {type}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </Link>
+        )}
+      </div>
     </main>
   );
 }
